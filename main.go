@@ -30,8 +30,8 @@ func main() {
 		}
 		// log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 		var cmds []string
-		if strings.ContainsAny(update.Message.Text, "|") {
-			cmds = strings.Split(update.Message.Text, "|")
+		if strings.ContainsAny(update.Message.Text, "\n") {
+			cmds = strings.Split(update.Message.Text, "\n")
 		} else {
 			cmds = strings.Split(update.Message.Text, " ")
 		}
