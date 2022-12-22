@@ -2,10 +2,10 @@ package main
 
 import (
 	"log"
+	"os/exec"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/internetghost0/gotelebot/utils"
 )
 
 func main() {
@@ -28,15 +28,15 @@ func main() {
 		if update.Message == nil { // ignore any non-message updates
 			continue
 		}
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		// log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 		var cmds []string
 		if strings.ContainsAny(update.Message.Text, "|") {
 			cmds = strings.Split(update.Message.Text, "|")
 		} else {
 			cmds = strings.Split(update.Message.Text, " ")
 		}
-		log.Printf("utils.ExecCmd(%s, %v)", cmds[0], cmds[1:])
-		out, err := utils.ExecCmd(cmds[0], cmds[1:])
+		log.Printf("ExecCmd(%s, %v)", cmds[0], cmds[1:])
+		out, err := ExecCmd(cmds[0], cmds[1:])
 		if err != nil {
 			out = "[!] ERROR:\n" + err.Error()
 		}
@@ -45,4 +45,12 @@ func main() {
 		msg.ReplyToMessageID = update.Message.MessageID
 		bot.Send(msg)
 	}
+}
+
+func ExecCmd(cmd string, args []string) (string, error) {
+	out, err := exec.Command(cmd, args...).Output()
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
